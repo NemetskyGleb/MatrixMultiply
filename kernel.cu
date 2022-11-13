@@ -73,7 +73,7 @@ void PrintMatrixResult(const BASE_TYPE* A, const BASE_TYPE* B, BASE_TYPE* C, dim
 		std::cout << C[Bdim.y] << " " << C[Bdim.y + 1] << " " << C[Bdim.y + 2] << " ... " << C[Bdim.y * 2] << std::endl;
 		std::cout << "................" << std::endl;
 		std::cout << C[(Adim.x - 1) * Bdim.y] << " " << C[(Adim.x - 1) * Bdim.y + 1] 
-			<< " " << C[(Adim.x - 1) * Bdim.y + 2] << "..." << C[(Adim.x - 1) * Bdim.y + (Adim.y - 1)] << std::endl;
+			<< " " << C[(Adim.x - 1) * Bdim.y + 2] << " ... " << C[(Adim.x - 1) * Bdim.y + (Adim.y - 1)] << std::endl;
 	}
 	// full output
 	else {

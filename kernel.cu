@@ -166,7 +166,7 @@ int main()
 
 	auto duration = duration_cast<milliseconds>(stop - start);
 
-	std::cout << "Time taken by function: "
+	std::cout << "Time spent executing by the CPU: "
 		<< duration.count() << " milliseconds" << std::endl;
 
 	PrintMatrixResult(h_A, h_B, h_C1, Adim, Bdim);

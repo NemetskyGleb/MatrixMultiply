@@ -175,6 +175,11 @@ int main()
 	
 	PrintMatrixResult(h_A, h_B, h_C2, Adim, Bdim);
 
+	delete[] h_A;
+	delete[] h_B;
+	delete[] h_C1;
+	delete[] h_C2;
+
 	return 0;
 }
 

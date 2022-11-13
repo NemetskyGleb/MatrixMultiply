@@ -66,32 +66,43 @@ uint toMultiple(uint a, uint b)
 
 void PrintMatrixResult(const BASE_TYPE* A, const BASE_TYPE* B, BASE_TYPE* C, dim3 Adim, dim3 Bdim)
 {
-	// Printing matrix A
-	for (size_t i = 0; i < Adim.x; i++)
+	// shorten output
+	if (Adim.x > 6 || Adim.y > 6 || Bdim.y > 6)
 	{
-		for (size_t j = 0; j < Adim.y; j++)
-		{
-			std::cout << A[i * Adim.y + j] << " ";
-		}
-		std::cout << "\n";
+		std::cout << C[0] << " " << C[1] << " " << C[2] << " ... " << C[Bdim.y - 1] << std::endl;
+		std::cout << C[Bdim.y] << " " << C[Bdim.y + 1] << " " << C[Bdim.y + 2] << " ... " << C[Bdim.y * 2] << std::endl;
+		std::cout << "................" << std::endl;
+		std::cout << C[(Adim.x - 1) * Bdim.y] << " " << C[(Adim.x - 1) * Bdim.y + 1] 
+			<< " " << C[(Adim.x - 1) * Bdim.y + 2] << "..." << C[(Adim.x - 1) * Bdim.y + (Adim.y - 1)] << std::endl;
 	}
-	std::cout << "\tX" << std::endl;
-	for (size_t i = 0; i < Bdim.x; i++)
-	{
-		for (size_t j = 0; j < Bdim.y; j++)
+	// full output
+	else {
+		for (size_t i = 0; i < Adim.x; i++)
 		{
-			std::cout << B[i * Bdim.y + j] << " ";
+			for (size_t j = 0; j < Adim.y; j++)
+			{
+				std::cout << A[i * Adim.y + j] << " ";
+			}
+			std::cout << "\n";
 		}
-		std::cout << "\n";
-	}
-	std::cout << "\t=" << std::endl;
-	for (size_t i = 0; i < Adim.x; i++)
-	{
-		for (size_t j = 0; j < Bdim.y; j++)
+		std::cout << "\tX" << std::endl;
+		for (size_t i = 0; i < Bdim.x; i++)
 		{
-			std::cout << C[i * Bdim.y + j] << " ";
+			for (size_t j = 0; j < Bdim.y; j++)
+			{
+				std::cout << B[i * Bdim.y + j] << " ";
+			}
+			std::cout << "\n";
 		}
-		std::cout << "\n";
+		std::cout << "\t=" << std::endl;
+		for (size_t i = 0; i < Adim.x; i++)
+		{
+			for (size_t j = 0; j < Bdim.y; j++)
+			{
+				std::cout << C[i * Bdim.y + j] << " ";
+			}
+			std::cout << "\n";
+		}
 	}
 }
 

@@ -36,7 +36,6 @@ void matrixMultiplyCpu(const BASE_TYPE* A, const BASE_TYPE* B, BASE_TYPE* C, dim
 	// цикл по строкам матрицы A
 	for (uint i = 0; i < Adim.x; i++)
 	{
-		// индекс элемента в строке A(на какой столбец B умножаем строку)
 		for (uint j = 0; j < Bcols; j++)
 		{
 			BASE_TYPE sum = 0;
@@ -109,6 +108,8 @@ void PrintMatrixResult(const BASE_TYPE* A, const BASE_TYPE* B, BASE_TYPE* C, dim
 void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h_C,
 	uint Asize, uint Bsize, uint Csize, dim3 Adim, dim3 Bdim);
 
+void CompareResults(const BASE_TYPE* C1, const BASE_TYPE* C2, dim3 Adim, dim3 Bdim);
+
 int main()
 {
 	unsigned int Arows, Acols, Brows, Bcols;
@@ -174,6 +175,8 @@ int main()
 	
 	PrintMatrixResult(h_A, h_B, h_C2, Adim, Bdim);
 
+	CompareResults(h_C1, h_C2, Adim, Bdim);
+
 	delete[] h_A;
 	delete[] h_B;
 	delete[] h_C1;
@@ -205,7 +208,14 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 
 	cudaStatus = cudaSetDevice(0);
 	checkError(cudaStatus);
-	
+
+	cudaStatus = cudaMalloc((void**)&dev_A, Asize * sizeof(BASE_TYPE));
+	checkError(cudaStatus);
+	cudaStatus = cudaMalloc((void**)&dev_B, Bsize * sizeof(BASE_TYPE));
+	checkError(cudaStatus);
+	cudaStatus = cudaMalloc((void**)&dev_C, Csize * sizeof(BASE_TYPE));
+	checkError(cudaStatus);
+
 	// инициализируем события
 	cudaEvent_t start, stop;
 	float elapsedTime;
@@ -214,13 +224,6 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	cudaEventCreate(&stop);
 	// запись события
 	cudaEventRecord(start, 0);
-
-	cudaStatus = cudaMalloc((void**)&dev_A, Asize * sizeof(BASE_TYPE));
-	checkError(cudaStatus);
-	cudaStatus = cudaMalloc((void**)&dev_B, Bsize * sizeof(BASE_TYPE));
-	checkError(cudaStatus);
-	cudaStatus = cudaMalloc((void**)&dev_C, Csize * sizeof(BASE_TYPE));
-	checkError(cudaStatus);
 
 	cudaStatus = cudaMemcpy(dev_A, h_A, Asize * sizeof(BASE_TYPE), cudaMemcpyHostToDevice);
 	checkError(cudaStatus);
@@ -258,4 +261,26 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	cudaFree(dev_C);
 	cudaFree(dev_A);
 	cudaFree(dev_B);
+}
+
+void CompareResults(const BASE_TYPE* C1, const BASE_TYPE* C2, dim3 Adim, dim3 Bdim)
+{
+	bool equal = true;
+	for (size_t i = 0; i < Adim.x; i++)
+	{
+		for (size_t j = 0; j < Bdim.y; j++)
+		{
+			if (C1[i * Bdim.y + j] != C2[i * Bdim.y + j])
+			{
+				equal = false;
+			}
+		}
+	}
+	if (equal)
+	{
+		std::cout << "Results are equal!" << std::endl;
+	}
+	else {
+		std::cout << "Result aren't equal!" << std::endl;
+	}
 }

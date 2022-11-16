@@ -272,6 +272,8 @@ void CompareResults(const BASE_TYPE* C1, const BASE_TYPE* C2, dim3 Adim, dim3 Bd
 		{
 			if (C1[i * Bdim.y + j] != C2[i * Bdim.y + j])
 			{
+				std::cout << "i = " << i << ";j = " << j;
+				std::cout << C1[i * Bdim.y + j] << "!=" << C2[i * Bdim.y + j] << std::endl;
 				equal = false;
 			}
 		}

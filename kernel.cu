@@ -206,6 +206,15 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 
 	cudaStatus = cudaSetDevice(0);
 	checkError(cudaStatus);
+	
+	// инициализируем события
+	cudaEvent_t start, stop;
+	float elapsedTime;
+	// создаем события
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	// запись события
+	cudaEventRecord(start, 0);
 
 	cudaStatus = cudaMalloc((void**)&dev_A, Asize * sizeof(BASE_TYPE));
 	checkError(cudaStatus);
@@ -225,23 +234,8 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	auto Arows = Adim.x;
 	dim3 blocksPerGrid = dim3(Bcols / BLOCK_SIZE, Arows / BLOCK_SIZE);
 	
-	// инициализируем события
-	cudaEvent_t start, stop;
-	float elapsedTime;
-	// создаем события
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	// запись события
-	cudaEventRecord(start, 0);
-
 	matrixMultiplyKernel<<<blocksPerGrid, threadsPerBlock>>>(dev_A, dev_B, dev_C, Adim.y, Bcols);
 	
-	cudaStatus = cudaEventRecord(stop, 0);
-	checkError(cudaStatus);
-	cudaStatus = cudaEventSynchronize(stop);
-	checkError(cudaStatus);
-	cudaStatus = cudaEventElapsedTime(&elapsedTime, start, stop);
-	checkError(cudaStatus);
 	// вывод информации
 	printf("Time spent executing by the GPU: %.2f milliseconds\n", elapsedTime);
 	// уничтожение события
@@ -251,6 +245,13 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	checkError(cudaStatus);
 
 	cudaStatus = cudaMemcpy(h_C, dev_C, Csize * sizeof(BASE_TYPE), cudaMemcpyDeviceToHost);
+	checkError(cudaStatus);
+
+	cudaStatus = cudaEventRecord(stop, 0);
+	checkError(cudaStatus);
+	cudaStatus = cudaEventSynchronize(stop);
+	checkError(cudaStatus);
+	cudaStatus = cudaEventElapsedTime(&elapsedTime, start, stop);
 	checkError(cudaStatus);
 
 	// Free resources.

@@ -235,20 +235,20 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	
 	matrixMultiplyKernel<<<blocksPerGrid, threadsPerBlock>>>(dev_A, dev_B, dev_C, Adim.y, Bcols);
 	
-	// уничтожение события
-	cudaStatus = cudaEventDestroy(start);
-	checkError(cudaStatus);
-	cudaStatus = cudaEventDestroy(stop);
-	checkError(cudaStatus);
-
 	cudaStatus = cudaMemcpy(h_C, dev_C, Csize * sizeof(BASE_TYPE), cudaMemcpyDeviceToHost);
 	checkError(cudaStatus);
-
+	
 	cudaStatus = cudaEventRecord(stop, 0);
 	checkError(cudaStatus);
 	cudaStatus = cudaEventSynchronize(stop);
 	checkError(cudaStatus);
 	cudaStatus = cudaEventElapsedTime(&elapsedTime, start, stop);
+	checkError(cudaStatus);
+
+	// уничтожение события
+	cudaStatus = cudaEventDestroy(start);
+	checkError(cudaStatus);
+	cudaStatus = cudaEventDestroy(stop);
 	checkError(cudaStatus);
 
 	// вывод информации

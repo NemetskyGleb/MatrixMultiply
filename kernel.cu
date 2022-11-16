@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <chrono>
 
-using BASE_TYPE = double;
+using BASE_TYPE = int64_t;
 using uint = unsigned int;
 
 constexpr uint BLOCK_SIZE = 16;
@@ -147,7 +147,7 @@ int main()
 	BASE_TYPE* h_C2 = new BASE_TYPE[Csize];
 
 	auto randNumber = []() {
-		return rand() / (BASE_TYPE)RAND_MAX;
+		return rand() % RAND_MAX;
 	};
 
 	std::generate(h_A, h_A + Asize, randNumber);

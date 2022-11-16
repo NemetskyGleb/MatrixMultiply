@@ -236,8 +236,6 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	
 	matrixMultiplyKernel<<<blocksPerGrid, threadsPerBlock>>>(dev_A, dev_B, dev_C, Adim.y, Bcols);
 	
-	// вывод информации
-	printf("Time spent executing by the GPU: %.2f milliseconds\n", elapsedTime);
 	// уничтожение события
 	cudaStatus = cudaEventDestroy(start);
 	checkError(cudaStatus);
@@ -253,6 +251,9 @@ void cudaMatrixMultiply(const BASE_TYPE* h_A, const BASE_TYPE* h_B, BASE_TYPE* h
 	checkError(cudaStatus);
 	cudaStatus = cudaEventElapsedTime(&elapsedTime, start, stop);
 	checkError(cudaStatus);
+
+	// вывод информации
+	printf("Time spent executing by the GPU: %.2f milliseconds\n", elapsedTime);
 
 	// Free resources.
 	cudaFree(dev_C);

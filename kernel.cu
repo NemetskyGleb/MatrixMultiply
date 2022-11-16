@@ -146,7 +146,7 @@ int main()
 	BASE_TYPE* h_C2 = new BASE_TYPE[Csize];
 
 	auto randNumber = []() {
-		return rand() % (BASE_TYPE)RAND_MAX;
+		return rand() / (BASE_TYPE)RAND_MAX;
 	};
 
 	std::generate(h_A, h_A + Asize, randNumber);
